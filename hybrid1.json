@@ -1,0 +1,511 @@
+{
+  "id": "simplified_hybrid_workflow",
+  "revision": 0,
+  "last_node_id": 30,
+  "last_link_id": 40,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [50, 100],
+      "size": [300, 340],
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1, 2, 3]}
+      ],
+      "widgets_values": ["car_image.jpg", "image"]
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [50, 500],
+      "size": [300, 340],
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [4]}
+      ],
+      "widgets_values": ["user_wheel.jpg", "image"]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [50, 900],
+      "size": [300, 340],
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [5]}
+      ],
+      "widgets_values": ["reference_color.jpg", "image"]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 1300],
+      "size": [270, 130],
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [6, 7]},
+        {"name": "CLIP", "type": "CLIP", "links": [8, 9]},
+        {"name": "VAE", "type": "VAE", "links": [10]}
+      ],
+      "widgets_values": ["sam3.1_multiplex_fp16.safetensors"]
+    },
+    {
+      "id": 5,
+      "type": "SAM3_Detect",
+      "pos": [420, 100],
+      "size": [270, 260],
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 6},
+        {"name": "image", "type": "IMAGE", "link": 1},
+        {"name": "conditioning", "type": "CONDITIONING", "link": 11}
+      ],
+      "outputs": [
+        {"name": "masks", "type": "MASK", "links": [12, 13]},
+        {"name": "bboxes", "type": "BOUNDING_BOX", "links": []}
+      ],
+      "widgets_values": [0.5, 2, false]
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [420, 400],
+      "size": [300, 100],
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 8}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [11]}
+      ],
+      "widgets_values": ["alloy wheel, rim, tire, body, car body"]
+    },
+    {
+      "id": 7,
+      "type": "SAM3_Detect",
+      "pos": [420, 550],
+      "size": [270, 260],
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 7},
+        {"name": "image", "type": "IMAGE", "link": 4},
+        {"name": "conditioning", "type": "CONDITIONING", "link": 14}
+      ],
+      "outputs": [
+        {"name": "masks", "type": "MASK", "links": [15]},
+        {"name": "bboxes", "type": "BOUNDING_BOX", "links": []}
+      ],
+      "widgets_values": [0.5, 2, false]
+    },
+    {
+      "id": 8,
+      "type": "CLIPTextEncode",
+      "pos": [420, 850],
+      "size": [300, 100],
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 9}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [14]}
+      ],
+      "widgets_values": ["wheel, rim, alloy wheel"]
+    },
+    {
+      "id": 9,
+      "type": "MaskToImage",
+      "pos": [750, 100],
+      "size": [225, 48],
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 12}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [16]}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "MaskToImage",
+      "pos": [750, 550],
+      "size": [225, 48],
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 15}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [17]}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "ImageCrop",
+      "pos": [1050, 100],
+      "size": [250, 120],
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 4},
+        {"name": "mask", "type": "MASK", "link": 15}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [18]}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 12,
+      "type": "ImageBlur",
+      "pos": [1050, 280],
+      "size": [250, 100],
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 18}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [19]}
+      ],
+      "widgets_values": [10, 10, "horizontal"]
+    },
+    {
+      "id": 13,
+      "type": "ImageThreshold",
+      "pos": [1050, 450],
+      "size": [250, 100],
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 19}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [20]},
+        {"name": "MASK", "type": "MASK", "links": [21]}
+      ],
+      "widgets_values": [128, 255]
+    },
+    {
+      "id": 14,
+      "type": "ImageResize",
+      "pos": [1400, 200],
+      "size": [250, 100],
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 20}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [22]}
+      ],
+      "widgets_values": [512, 512, "lanczos", "center"]
+    },
+    {
+      "id": 15,
+      "type": "ImageResize",
+      "pos": [1400, 50],
+      "size": [250, 100],
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 22},
+        {"name": "width", "type": "INT", "link": 23},
+        {"name": "height", "type": "INT", "link": 24}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [25]}
+      ],
+      "widgets_values": [512, 512, "lanczos", "center"]
+    },
+    {
+      "id": 16,
+      "type": "GetImageSize",
+      "pos": [1050, 700],
+      "size": [225, 160],
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 1}
+      ],
+      "outputs": [
+        {"name": "width", "type": "INT", "links": [23]},
+        {"name": "height", "type": "INT", "links": [24]},
+        {"name": "batch_size", "type": "INT", "links": []}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "ImageCompositeMasked",
+      "pos": [1750, 100],
+      "size": [270, 188],
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "destination", "type": "IMAGE", "link": 26},
+        {"name": "source", "type": "IMAGE", "link": 25},
+        {"name": "mask", "type": "MASK", "link": 21}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [27]}
+      ],
+      "widgets_values": [0, 0, false]
+    },
+    {
+      "id": 18,
+      "type": "EmptyImage",
+      "pos": [1400, 700],
+      "size": [270, 176],
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "width", "type": "INT", "link": 23},
+        {"name": "height", "type": "INT", "link": 24}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [26]}
+      ],
+      "widgets_values": [512, 512, 1, 16777215]
+    },
+    {
+      "id": 19,
+      "type": "VAELoader",
+      "pos": [900, 1200],
+      "size": [270, 82],
+      "order": 18,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "VAE", "type": "VAE", "links": [10]}
+      ],
+      "widgets_values": ["qwen_image_vae.safetensors"]
+    },
+    {
+      "id": 20,
+      "type": "TextEncodeQwenImageEditPlus",
+      "pos": [900, 1350],
+      "size": [400, 212],
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 9},
+        {"name": "vae", "type": "VAE", "link": 10},
+        {"name": "image1", "type": "IMAGE", "link": 2},
+        {"name": "image2", "type": "IMAGE", "link": 28},
+        {"name": "image3", "type": "IMAGE", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [29]}
+      ],
+      "widgets_values": ["change the car body color to match the color in the second image, preserve all reflections, lighting, and shadows, keep the original wheels exactly as they are, photorealistic"]
+    },
+    {
+      "id": 21,
+      "type": "LoadImage",
+      "pos": [900, 1650],
+      "size": [270, 176],
+      "order": 20,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [28]}
+      ],
+      "widgets_values": ["body_color_reference.jpg", "image"]
+    },
+    {
+      "id": 22,
+      "type": "EmptyLatentImage",
+      "pos": [900, 1850],
+      "size": [270, 176],
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "width", "type": "INT", "link": 23},
+        {"name": "height", "type": "INT", "link": 24}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [30]}
+      ],
+      "widgets_values": [512, 512, 1]
+    },
+    {
+      "id": 23,
+      "type": "SetLatentNoiseMask",
+      "pos": [1250, 1850],
+      "size": [225, 72],
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 30},
+        {"name": "mask", "type": "MASK", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [31]}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 24,
+      "type": "UNETLoader",
+      "pos": [900, 2100],
+      "size": [270, 110],
+      "order": 23,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [32]}
+      ],
+      "widgets_values": ["qwen_image_edit_2511_fp8mixed.safetensors", "default"]
+    },
+    {
+      "id": 25,
+      "type": "KSampler",
+      "pos": [1600, 1900],
+      "size": [270, 317],
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 32},
+        {"name": "positive", "type": "CONDITIONING", "link": 29},
+        {"name": "negative", "type": "CONDITIONING", "link": 33},
+        {"name": "latent_image", "type": "LATENT", "link": 31}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [34]}
+      ],
+      "widgets_values": [1021635661736046, "randomize", 20, 4, "euler", "simple", 0.7]
+    },
+    {
+      "id": 26,
+      "type": "VAEDecode",
+      "pos": [1950, 1900],
+      "size": [225, 71],
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 34},
+        {"name": "vae", "type": "VAE", "link": 10}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [35]}
+      ],
+      "widgets_values": []
+    },
+    {
+      "id": 27,
+      "type": "CLIPTextEncode",
+      "pos": [1600, 2300],
+      "size": [400, 200],
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 9}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [33]}
+      ],
+      "widgets_values": ["wrong color, uneven paint, matte finish, dull, orange peel, changed wheels, modified wheels, different wheel design, blurry, low quality"]
+    },
+    {
+      "id": 28,
+      "type": "ImageCompositeMasked",
+      "pos": [2400, 100],
+      "size": [270, 188],
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {"name": "destination", "type": "IMAGE", "link": 35},
+        {"name": "source", "type": "IMAGE", "link": 27},
+        {"name": "mask", "type": "MASK", "link": 21}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [36]}
+      ],
+      "widgets_values": [0, 0, false]
+    },
+    {
+      "id": 29,
+      "type": "PreviewImage",
+      "pos": [2800, 100],
+      "size": [500, 500],
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 36}
+      ],
+      "outputs": [],
+      "widgets_values": []
+    },
+    {
+      "id": 30,
+      "type": "SaveImage",
+      "pos": [2800, 650],
+      "size": [300, 150],
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 36}
+      ],
+      "outputs": [],
+      "widgets_values": ["customized_car_result", "png"]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 5, 1, "IMAGE"],
+    [2, 1, 0, 16, 0, "IMAGE"],
+    [3, 1, 0, 20, 2, "IMAGE"],
+    [4, 2, 0, 7, 1, "IMAGE"],
+    [5, 3, 0, 20, 3, "IMAGE"],
+    [6, 4, 0, 5, 0, "MODEL"],
+    [7, 4, 0, 7, 0, "MODEL"],
+    [8, 4, 1, 6, 0, "CLIP"],
+    [9, 4, 1, 8, 0, "CLIP"],
+    [10, 4, 2, 19, 0, "VAE"],
+    [11, 6, 0, 5, 2, "CONDITIONING"],
+    [12, 5, 0, 9, 0, "MASK"],
+    [13, 5, 0, 23, 1, "MASK"],
+    [14, 8, 0, 7, 2, "CONDITIONING"],
+    [15, 7, 0, 10, 0, "MASK"],
+    [16, 9, 0, 0, 0, "IMAGE"],
+    [17, 10, 0, 0, 0, "IMAGE"],
+    [18, 11, 0, 12, 0, "IMAGE"],
+    [19, 12, 0, 13, 0, "IMAGE"],
+    [20, 13, 0, 14, 0, "IMAGE"],
+    [21, 13, 1, 17, 2, "MASK"],
+    [22, 14, 0, 15, 0, "IMAGE"],
+    [23, 16, 0, 15, 1, "INT"],
+    [24, 16, 1, 15, 2, "INT"],
+    [25, 15, 0, 17, 1, "IMAGE"],
+    [26, 18, 0, 17, 0, "IMAGE"],
+    [27, 17, 0, 28, 1, "IMAGE"],
+    [28, 21, 0, 20, 3, "IMAGE"],
+    [29, 20, 0, 25, 1, "CONDITIONING"],
+    [30, 22, 0, 23, 0, "LATENT"],
+    [31, 23, 0, 25, 3, "LATENT"],
+    [32, 24, 0, 25, 0, "MODEL"],
+    [33, 27, 0, 25, 2, "CONDITIONING"],
+    [34, 25, 0, 26, 0, "LATENT"],
+    [35, 26, 0, 28, 0, "IMAGE"],
+    [36, 28, 0, 29, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

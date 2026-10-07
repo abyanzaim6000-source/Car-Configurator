@@ -1,0 +1,2090 @@
+{
+ "last_node_id": 33,
+ "last_link_id": 55,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "UNETLoader",
+   "pos": [
+    -1820,
+    -760
+   ],
+   "size": [
+    400,
+    82
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      1
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "UNETLoader"
+   },
+   "widgets_values": [
+    "qwen_image_edit_2511_fp8_e4m3fn_scaled.safetensors",
+    "fp8_e4m3fn_fast"
+   ],
+   "title": "Load Qwen-Edit-2511 (FP8 e4m3fn scaled)"
+  },
+  {
+   "id": 2,
+   "type": "LoraLoaderModelOnly",
+   "pos": [
+    -1390,
+    -760
+   ],
+   "size": [
+    330,
+    82
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 1
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      2
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoraLoaderModelOnly"
+   },
+   "widgets_values": [
+    "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+    1.0
+   ],
+   "title": "Lightning 4-step LoRA  (bypass for quality mode)"
+  },
+  {
+   "id": 3,
+   "type": "ModelSamplingAuraFlow",
+   "pos": [
+    -1030,
+    -760
+   ],
+   "size": [
+    270,
+    60
+   ],
+   "flags": {},
+   "order": 2,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 2
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      3
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ModelSamplingAuraFlow"
+   },
+   "widgets_values": [
+    3.0
+   ],
+   "title": "ModelSamplingAuraFlow  shift=3.0"
+  },
+  {
+   "id": 4,
+   "type": "CFGNorm",
+   "pos": [
+    -730,
+    -760
+   ],
+   "size": [
+    250,
+    60
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 3
+    }
+   ],
+   "outputs": [
+    {
+     "name": "patched_model",
+     "type": "MODEL",
+     "links": [
+      4
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CFGNorm"
+   },
+   "widgets_values": [
+    1.0
+   ],
+   "title": "CFGNorm (official 2511 template)"
+  },
+  {
+   "id": 5,
+   "type": "DifferentialDiffusion",
+   "pos": [
+    -450,
+    -760
+   ],
+   "size": [
+    280,
+    46
+   ],
+   "flags": {},
+   "order": 4,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 4
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      22,
+      47
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "DifferentialDiffusion"
+   },
+   "title": "DifferentialDiffusion (soft-mask denoise)"
+  },
+  {
+   "id": 6,
+   "type": "CLIPLoader",
+   "pos": [
+    -1820,
+    -620
+   ],
+   "size": [
+    420,
+    100
+   ],
+   "flags": {},
+   "order": 5,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      11,
+      36
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPLoader"
+   },
+   "widgets_values": [
+    "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "qwen_image",
+    "default"
+   ],
+   "title": "Load Qwen2.5-VL Text Encoder"
+  },
+  {
+   "id": 7,
+   "type": "VAELoader",
+   "pos": [
+    -1360,
+    -620
+   ],
+   "size": [
+    330,
+    60
+   ],
+   "flags": {},
+   "order": 6,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      12,
+      19,
+      27,
+      37,
+      44,
+      52
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAELoader"
+   },
+   "widgets_values": [
+    "qwen_image_vae.safetensors"
+   ],
+   "title": "Load Qwen Image VAE"
+  },
+  {
+   "id": 8,
+   "type": "LoadImage",
+   "pos": [
+    -1750,
+    -420
+   ],
+   "size": [
+    320,
+    314
+   ],
+   "flags": {},
+   "order": 7,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      6,
+      9,
+      31
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "car.png",
+    "image"
+   ],
+   "title": "INPUT 1 \u2014 Car photo (full ORIGINAL resolution)"
+  },
+  {
+   "id": 9,
+   "type": "LoadImage",
+   "pos": [
+    -1750,
+    -60
+   ],
+   "size": [
+    320,
+    314
+   ],
+   "flags": {},
+   "order": 8,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      14,
+      39
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "wheel.png",
+    "image"
+   ],
+   "title": "INPUT 2 \u2014 New alloy wheel reference (clean product shot)"
+  },
+  {
+   "id": 10,
+   "type": "LoadSAM3Model",
+   "pos": [
+    -1750,
+    320
+   ],
+   "size": [
+    310,
+    82
+   ],
+   "flags": {},
+   "order": 9,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "sam3_model_config",
+     "type": "SAM3_MODEL_CONFIG",
+     "links": [],
+     "slot_index": 0
+    },
+    {
+     "name": "sam3_model",
+     "type": "SAM3_MODEL",
+     "links": [
+      5,
+      30
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadSAM3Model"
+   },
+   "widgets_values": [
+    "auto",
+    false
+   ],
+   "title": "Load SAM3 (auto-downloads; compile off)"
+  },
+  {
+   "id": 11,
+   "type": "SAM3Grounding",
+   "pos": [
+    -1400,
+    300
+   ],
+   "size": [
+    330,
+    190
+   ],
+   "flags": {},
+   "order": 10,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "sam3_model",
+     "type": "SAM3_MODEL",
+     "link": 5
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 6
+    }
+   ],
+   "outputs": [
+    {
+     "name": "masks",
+     "type": "MASK",
+     "links": [
+      8
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "visualization",
+     "type": "IMAGE",
+     "links": [
+      7
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "boxes_json",
+     "type": "STRING",
+     "links": [],
+     "slot_index": 0
+    },
+    {
+     "name": "scores_json",
+     "type": "STRING",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "SAM3Grounding"
+   },
+   "widgets_values": [
+    0.3,
+    "front wheel",
+    1
+   ],
+   "title": "SAM3 \u2014 front wheel"
+  },
+  {
+   "id": 12,
+   "type": "PreviewImage",
+   "pos": [
+    -1400,
+    530
+   ],
+   "size": [
+    260,
+    250
+   ],
+   "flags": {},
+   "order": 11,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 7
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "PreviewImage"
+   },
+   "title": "SAM3 FRONT preview"
+  },
+  {
+   "id": 13,
+   "type": "GrowMaskWithBlur",
+   "pos": [
+    -1040,
+    300
+   ],
+   "size": [
+    300,
+    240
+   ],
+   "flags": {},
+   "order": 12,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 8
+    }
+   ],
+   "outputs": [
+    {
+     "name": "mask",
+     "type": "MASK",
+     "links": [
+      10
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "mask_inverted",
+     "type": "MASK",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "GrowMaskWithBlur"
+   },
+   "widgets_values": [
+    6,
+    0.0,
+    true,
+    false,
+    3.0,
+    1.0,
+    1.0,
+    true
+   ],
+   "title": "Grow+feather (FRONT)"
+  },
+  {
+   "id": 14,
+   "type": "InpaintCropImproved",
+   "pos": [
+    -700,
+    180
+   ],
+   "size": [
+    330,
+    620
+   ],
+   "flags": {},
+   "order": 13,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 9
+    },
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 10
+    },
+    {
+     "name": "optional_context_mask",
+     "type": "MASK",
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "name": "stitcher",
+     "type": "STITCHER",
+     "links": [
+      28
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "cropped_image",
+     "type": "IMAGE",
+     "links": [
+      13,
+      20
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "cropped_mask",
+     "type": "MASK",
+     "links": [
+      21
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintCropImproved"
+   },
+   "widgets_values": [
+    "bilinear",
+    "lanczos",
+    false,
+    "ensure minimum resolution",
+    1024,
+    1024,
+    16384,
+    16384,
+    true,
+    0,
+    false,
+    20,
+    0.1,
+    false,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.7,
+    true,
+    1024,
+    1024,
+    "32",
+    "gpu (much faster)"
+   ],
+   "title": "\u2702 Crop FRONT @1024\u00b2, context 1.7"
+  },
+  {
+   "id": 15,
+   "type": "TextEncodeQwenImageEditPlus",
+   "pos": [
+    -300,
+    140
+   ],
+   "size": [
+    430,
+    260
+   ],
+   "flags": {},
+   "order": 14,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 11
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 12
+    },
+    {
+     "name": "image1",
+     "type": "IMAGE",
+     "link": 13
+    },
+    {
+     "name": "image2",
+     "type": "IMAGE",
+     "link": 14
+    },
+    {
+     "name": "image3",
+     "type": "IMAGE",
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      15
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "TextEncodeQwenImageEditPlus"
+   },
+   "widgets_values": [
+    "Replace the front alloy wheel rim of the car in image 1 with the alloy wheel design shown in image 2. Match the original wheel's exact position, diameter, perspective, rotation and camera angle. Re-render the new rim with the scene's real lighting, reflections and ground shadow so it looks photographed in place, not pasted. Keep the tire, sidewall, brake caliper, fender and everything else in image 1 unchanged."
+   ],
+   "title": "Qwen Encode POS \u2014 FRONT"
+  },
+  {
+   "id": 16,
+   "type": "FluxKontextMultiReferenceLatentMethod",
+   "pos": [
+    170,
+    140
+   ],
+   "size": [
+    330,
+    60
+   ],
+   "flags": {},
+   "order": 15,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 15
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      16,
+      17
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+   },
+   "widgets_values": [
+    "index_timestep_zero"
+   ],
+   "title": "Ref-latent method: index_timestep_zero"
+  },
+  {
+   "id": 17,
+   "type": "ConditioningZeroOut",
+   "pos": [
+    170,
+    240
+   ],
+   "size": [
+    300,
+    46
+   ],
+   "flags": {},
+   "order": 16,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 16
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      18
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ConditioningZeroOut"
+   },
+   "title": "Negative = ZeroOut (CFG 1.0; saves a full VL encode)"
+  },
+  {
+   "id": 18,
+   "type": "InpaintModelConditioning",
+   "pos": [
+    170,
+    350
+   ],
+   "size": [
+    330,
+    150
+   ],
+   "flags": {},
+   "order": 17,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 17
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 18
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 19
+    },
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 20
+    },
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 21
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": [
+      23
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": [
+      24
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "links": [
+      25
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintModelConditioning"
+   },
+   "widgets_values": [
+    true
+   ],
+   "title": "InpaintModelConditioning (noise_mask=ON)"
+  },
+  {
+   "id": 19,
+   "type": "KSampler",
+   "pos": [
+    540,
+    140
+   ],
+   "size": [
+    300,
+    262
+   ],
+   "flags": {},
+   "order": 18,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 22
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 23
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 24
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 25
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      26
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    7,
+    "fixed",
+    4,
+    1.0,
+    "euler",
+    "simple",
+    1.0
+   ],
+   "title": "KSampler FRONT \u2014 4-step, seed fixed"
+  },
+  {
+   "id": 20,
+   "type": "VAEDecode",
+   "pos": [
+    880,
+    140
+   ],
+   "size": [
+    200,
+    60
+   ],
+   "flags": {},
+   "order": 19,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 26
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 27
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      29
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "title": "VAE Decode"
+  },
+  {
+   "id": 21,
+   "type": "InpaintStitchImproved",
+   "pos": [
+    880,
+    260
+   ],
+   "size": [
+    300,
+    78
+   ],
+   "flags": {},
+   "order": 20,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "stitcher",
+     "type": "STITCHER",
+     "link": 28
+    },
+    {
+     "name": "inpainted_image",
+     "type": "IMAGE",
+     "link": 29
+    }
+   ],
+   "outputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "links": [
+      34
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintStitchImproved"
+   },
+   "title": "Inpaint Stitch \u2192 ORIGINAL resolution"
+  },
+  {
+   "id": 22,
+   "type": "SAM3Grounding",
+   "pos": [
+    -1400,
+    1120
+   ],
+   "size": [
+    330,
+    190
+   ],
+   "flags": {},
+   "order": 21,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "sam3_model",
+     "type": "SAM3_MODEL",
+     "link": 30
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 31
+    }
+   ],
+   "outputs": [
+    {
+     "name": "masks",
+     "type": "MASK",
+     "links": [
+      33
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "visualization",
+     "type": "IMAGE",
+     "links": [
+      32
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "boxes_json",
+     "type": "STRING",
+     "links": [],
+     "slot_index": 0
+    },
+    {
+     "name": "scores_json",
+     "type": "STRING",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "SAM3Grounding"
+   },
+   "widgets_values": [
+    0.3,
+    "rear wheel",
+    1
+   ],
+   "title": "SAM3 \u2014 rear wheel"
+  },
+  {
+   "id": 23,
+   "type": "PreviewImage",
+   "pos": [
+    -1400,
+    1350
+   ],
+   "size": [
+    260,
+    250
+   ],
+   "flags": {},
+   "order": 22,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 32
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "PreviewImage"
+   },
+   "title": "SAM3 REAR preview"
+  },
+  {
+   "id": 24,
+   "type": "GrowMaskWithBlur",
+   "pos": [
+    -1040,
+    1120
+   ],
+   "size": [
+    300,
+    240
+   ],
+   "flags": {},
+   "order": 23,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 33
+    }
+   ],
+   "outputs": [
+    {
+     "name": "mask",
+     "type": "MASK",
+     "links": [
+      35
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "mask_inverted",
+     "type": "MASK",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "GrowMaskWithBlur"
+   },
+   "widgets_values": [
+    6,
+    0.0,
+    true,
+    false,
+    3.0,
+    1.0,
+    1.0,
+    true
+   ],
+   "title": "Grow+feather (REAR)"
+  },
+  {
+   "id": 25,
+   "type": "InpaintCropImproved",
+   "pos": [
+    -700,
+    1000
+   ],
+   "size": [
+    330,
+    620
+   ],
+   "flags": {},
+   "order": 24,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 34
+    },
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 35
+    },
+    {
+     "name": "optional_context_mask",
+     "type": "MASK",
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "name": "stitcher",
+     "type": "STITCHER",
+     "links": [
+      53
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "cropped_image",
+     "type": "IMAGE",
+     "links": [
+      38,
+      45
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "cropped_mask",
+     "type": "MASK",
+     "links": [
+      46
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintCropImproved"
+   },
+   "widgets_values": [
+    "bilinear",
+    "lanczos",
+    false,
+    "ensure minimum resolution",
+    1024,
+    1024,
+    16384,
+    16384,
+    true,
+    0,
+    false,
+    20,
+    0.1,
+    false,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.7,
+    true,
+    1024,
+    1024,
+    "32",
+    "gpu (much faster)"
+   ],
+   "title": "\u2702 Crop REAR @1024\u00b2, context 1.7"
+  },
+  {
+   "id": 26,
+   "type": "TextEncodeQwenImageEditPlus",
+   "pos": [
+    -300,
+    960
+   ],
+   "size": [
+    430,
+    260
+   ],
+   "flags": {},
+   "order": 25,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 36
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 37
+    },
+    {
+     "name": "image1",
+     "type": "IMAGE",
+     "link": 38
+    },
+    {
+     "name": "image2",
+     "type": "IMAGE",
+     "link": 39
+    },
+    {
+     "name": "image3",
+     "type": "IMAGE",
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      40
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "TextEncodeQwenImageEditPlus"
+   },
+   "widgets_values": [
+    "Replace the rear alloy wheel rim of the car in image 1 with the alloy wheel design shown in image 2. Match the original wheel's exact position, diameter, perspective, rotation and camera angle. Re-render the new rim with the scene's real lighting, reflections and ground shadow so it looks photographed in place, not pasted. Keep the tire, sidewall, brake caliper, fender and everything else in image 1 unchanged."
+   ],
+   "title": "Qwen Encode POS \u2014 REAR"
+  },
+  {
+   "id": 27,
+   "type": "FluxKontextMultiReferenceLatentMethod",
+   "pos": [
+    170,
+    960
+   ],
+   "size": [
+    330,
+    60
+   ],
+   "flags": {},
+   "order": 26,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 40
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      41,
+      42
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+   },
+   "widgets_values": [
+    "index_timestep_zero"
+   ],
+   "title": "Ref-latent method: index_timestep_zero"
+  },
+  {
+   "id": 28,
+   "type": "ConditioningZeroOut",
+   "pos": [
+    170,
+    1060
+   ],
+   "size": [
+    300,
+    46
+   ],
+   "flags": {},
+   "order": 27,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 41
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      43
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ConditioningZeroOut"
+   },
+   "title": "Negative = ZeroOut (CFG 1.0; saves a full VL encode)"
+  },
+  {
+   "id": 29,
+   "type": "InpaintModelConditioning",
+   "pos": [
+    170,
+    1170
+   ],
+   "size": [
+    330,
+    150
+   ],
+   "flags": {},
+   "order": 28,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 42
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 43
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 44
+    },
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 45
+    },
+    {
+     "name": "mask",
+     "type": "MASK",
+     "link": 46
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": [
+      48
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": [
+      49
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "latent",
+     "type": "LATENT",
+     "links": [
+      50
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintModelConditioning"
+   },
+   "widgets_values": [
+    true
+   ],
+   "title": "InpaintModelConditioning (noise_mask=ON)"
+  },
+  {
+   "id": 30,
+   "type": "KSampler",
+   "pos": [
+    540,
+    960
+   ],
+   "size": [
+    300,
+    262
+   ],
+   "flags": {},
+   "order": 29,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 47
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 48
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 49
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 50
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      51
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    7,
+    "fixed",
+    4,
+    1.0,
+    "euler",
+    "simple",
+    1.0
+   ],
+   "title": "KSampler REAR \u2014 4-step, seed fixed"
+  },
+  {
+   "id": 31,
+   "type": "VAEDecode",
+   "pos": [
+    880,
+    960
+   ],
+   "size": [
+    200,
+    60
+   ],
+   "flags": {},
+   "order": 30,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 51
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 52
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      54
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "title": "VAE Decode"
+  },
+  {
+   "id": 32,
+   "type": "InpaintStitchImproved",
+   "pos": [
+    880,
+    1080
+   ],
+   "size": [
+    300,
+    78
+   ],
+   "flags": {},
+   "order": 31,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "stitcher",
+     "type": "STITCHER",
+     "link": 53
+    },
+    {
+     "name": "inpainted_image",
+     "type": "IMAGE",
+     "link": 54
+    }
+   ],
+   "outputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "links": [
+      55
+     ],
+     "slot_index": 0
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "InpaintStitchImproved"
+   },
+   "title": "Inpaint Stitch \u2192 ORIGINAL resolution"
+  },
+  {
+   "id": 33,
+   "type": "SaveImage",
+   "pos": [
+    1240,
+    1000
+   ],
+   "size": [
+    320,
+    290
+   ],
+   "flags": {},
+   "order": 32,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 55
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "CarVyon/B_wheel_swap"
+   ],
+   "title": "Save (full original resolution)"
+  }
+ ],
+ "links": [
+  [
+   1,
+   1,
+   0,
+   2,
+   0,
+   "MODEL"
+  ],
+  [
+   2,
+   2,
+   0,
+   3,
+   0,
+   "MODEL"
+  ],
+  [
+   3,
+   3,
+   0,
+   4,
+   0,
+   "MODEL"
+  ],
+  [
+   4,
+   4,
+   0,
+   5,
+   0,
+   "MODEL"
+  ],
+  [
+   5,
+   10,
+   1,
+   11,
+   0,
+   "SAM3_MODEL"
+  ],
+  [
+   6,
+   8,
+   0,
+   11,
+   1,
+   "IMAGE"
+  ],
+  [
+   7,
+   11,
+   1,
+   12,
+   0,
+   "IMAGE"
+  ],
+  [
+   8,
+   11,
+   0,
+   13,
+   0,
+   "MASK"
+  ],
+  [
+   9,
+   8,
+   0,
+   14,
+   0,
+   "IMAGE"
+  ],
+  [
+   10,
+   13,
+   0,
+   14,
+   1,
+   "MASK"
+  ],
+  [
+   11,
+   6,
+   0,
+   15,
+   0,
+   "CLIP"
+  ],
+  [
+   12,
+   7,
+   0,
+   15,
+   1,
+   "VAE"
+  ],
+  [
+   13,
+   14,
+   1,
+   15,
+   2,
+   "IMAGE"
+  ],
+  [
+   14,
+   9,
+   0,
+   15,
+   3,
+   "IMAGE"
+  ],
+  [
+   15,
+   15,
+   0,
+   16,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   16,
+   16,
+   0,
+   17,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   17,
+   16,
+   0,
+   18,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   18,
+   17,
+   0,
+   18,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   19,
+   7,
+   0,
+   18,
+   2,
+   "VAE"
+  ],
+  [
+   20,
+   14,
+   1,
+   18,
+   3,
+   "IMAGE"
+  ],
+  [
+   21,
+   14,
+   2,
+   18,
+   4,
+   "MASK"
+  ],
+  [
+   22,
+   5,
+   0,
+   19,
+   0,
+   "MODEL"
+  ],
+  [
+   23,
+   18,
+   0,
+   19,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   24,
+   18,
+   1,
+   19,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   25,
+   18,
+   2,
+   19,
+   3,
+   "LATENT"
+  ],
+  [
+   26,
+   19,
+   0,
+   20,
+   0,
+   "LATENT"
+  ],
+  [
+   27,
+   7,
+   0,
+   20,
+   1,
+   "VAE"
+  ],
+  [
+   28,
+   14,
+   0,
+   21,
+   0,
+   "STITCHER"
+  ],
+  [
+   29,
+   20,
+   0,
+   21,
+   1,
+   "IMAGE"
+  ],
+  [
+   30,
+   10,
+   1,
+   22,
+   0,
+   "SAM3_MODEL"
+  ],
+  [
+   31,
+   8,
+   0,
+   22,
+   1,
+   "IMAGE"
+  ],
+  [
+   32,
+   22,
+   1,
+   23,
+   0,
+   "IMAGE"
+  ],
+  [
+   33,
+   22,
+   0,
+   24,
+   0,
+   "MASK"
+  ],
+  [
+   34,
+   21,
+   0,
+   25,
+   0,
+   "IMAGE"
+  ],
+  [
+   35,
+   24,
+   0,
+   25,
+   1,
+   "MASK"
+  ],
+  [
+   36,
+   6,
+   0,
+   26,
+   0,
+   "CLIP"
+  ],
+  [
+   37,
+   7,
+   0,
+   26,
+   1,
+   "VAE"
+  ],
+  [
+   38,
+   25,
+   1,
+   26,
+   2,
+   "IMAGE"
+  ],
+  [
+   39,
+   9,
+   0,
+   26,
+   3,
+   "IMAGE"
+  ],
+  [
+   40,
+   26,
+   0,
+   27,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   41,
+   27,
+   0,
+   28,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   42,
+   27,
+   0,
+   29,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   43,
+   28,
+   0,
+   29,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   44,
+   7,
+   0,
+   29,
+   2,
+   "VAE"
+  ],
+  [
+   45,
+   25,
+   1,
+   29,
+   3,
+   "IMAGE"
+  ],
+  [
+   46,
+   25,
+   2,
+   29,
+   4,
+   "MASK"
+  ],
+  [
+   47,
+   5,
+   0,
+   30,
+   0,
+   "MODEL"
+  ],
+  [
+   48,
+   29,
+   0,
+   30,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   49,
+   29,
+   1,
+   30,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   50,
+   29,
+   2,
+   30,
+   3,
+   "LATENT"
+  ],
+  [
+   51,
+   30,
+   0,
+   31,
+   0,
+   "LATENT"
+  ],
+  [
+   52,
+   7,
+   0,
+   31,
+   1,
+   "VAE"
+  ],
+  [
+   53,
+   25,
+   0,
+   32,
+   0,
+   "STITCHER"
+  ],
+  [
+   54,
+   31,
+   0,
+   32,
+   1,
+   "IMAGE"
+  ],
+  [
+   55,
+   32,
+   0,
+   33,
+   0,
+   "IMAGE"
+  ]
+ ],
+ "groups": [
+  {
+   "title": "1 \u00b7 MODEL BACKBONE",
+   "bounding": [
+    -1790,
+    -830,
+    1560,
+    250
+   ],
+   "color": "#3f789e",
+   "font_size": 24,
+   "flags": {}
+  },
+  {
+   "title": "2 \u00b7 INPUTS",
+   "bounding": [
+    -1790,
+    -490,
+    400,
+    720
+   ],
+   "color": "#a1309b",
+   "font_size": 24,
+   "flags": {}
+  },
+  {
+   "title": "3 \u00b7 PASS 1 \u2014 FRONT WHEEL",
+   "bounding": [
+    -1450,
+    120,
+    2680,
+    700
+   ],
+   "color": "#88a",
+   "font_size": 24,
+   "flags": {}
+  },
+  {
+   "title": "4 \u00b7 PASS 2 \u2014 REAR WHEEL (runs on Pass-1 result)",
+   "bounding": [
+    -1450,
+    940,
+    2680,
+    700
+   ],
+   "color": "#653",
+   "font_size": 24,
+   "flags": {}
+  }
+ ],
+ "config": {},
+ "extra": {},
+ "version": 0.4
+}
