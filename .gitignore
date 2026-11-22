@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.env.*
+*.safetensors
+*.ckpt
+*.gguf
+*.pth
+*.pt
+*.onnx
+input/
+output/
+models/
